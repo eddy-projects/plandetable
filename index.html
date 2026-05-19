@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Table - Mariage</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <h1>Plan de Table</h1>
+            <div class="counters">
+                <div class="counter-box">
+                    <span class="label">Extérieur</span>
+                    <span class="value" id="count-ext">0</span>
+                </div>
+                <div class="counter-box">
+                    <span class="label">Intérieur</span>
+                    <span class="value" id="count-int">0</span>
+                </div>
+                <div class="counter-box">
+                    <span class="label">Total Gauche</span>
+                    <span class="value" id="count-left">0</span>
+                </div>
+                <div class="counter-box">
+                    <span class="label">Total Droite</span>
+                    <span class="value" id="count-right">0</span>
+                </div>
+            </div>
+            <div class="actions">
+                <button id="btn-save" class="btn primary">Sauvegarder</button>
+                <button id="btn-optimize" class="btn secondary">Optimiser l'espace</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <h2>Outils</h2>
+                <p>Cliquez pour créer une chaise au centre, puis glissez-la. Elle se collera aux tables.</p>
+                
+                <div class="tool-group" style="margin-bottom: 1rem;">
+                    <label for="spacing-input" style="font-size: 0.9rem; font-weight: bold; color: var(--wood-dark);">Espacement central (cm)</label>
+                    <input type="number" id="spacing-input" value="100" min="0" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem; border: 1px solid #CCC; border-radius: 4px;">
+                </div>
+
+                <button class="tool-btn" id="tool-add-ext" data-type="ext">
+                    <div class="chair-icon ext"></div>
+                    Créer Chaise Extérieure (53cm)
+                </button>
+                <button class="tool-btn" id="tool-add-int" data-type="int">
+                    <div class="chair-icon int"></div>
+                    Créer Chaise Intérieure (47cm)
+                </button>
+                <button class="tool-btn" id="tool-delete" data-type="delete">
+                    🗑️ Outil Suppression Rapide
+                </button>
+                <hr style="border: none; border-top: 1px solid #CCC; margin: 1rem 0;">
+                <button class="tool-btn" id="tool-autofill" data-type="autofill" style="justify-content: center; background-color: var(--peony-pink); color: white; border: none; font-weight: bold;">
+                    Remplissage Automatique
+                </button>
+                
+                <div class="info-panel">
+                    <h3>Contraintes & Astuces</h3>
+                    <ul>
+                        <li>Glissez-Déposez pour déplacer.</li>
+                        <li>Table mariés (gauche, milieu) : pas de chaise en face.</li>
+                        <li>Cliquez sur une chaise pour la renommer ou la supprimer.</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Canvas area -->
+            <div class="canvas-container" id="canvas-container">
+                <svg id="svg-canvas" viewBox="0 0 2000 1000" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <!-- Patterns or gradients can go here -->
+                        <linearGradient id="wood" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#D4B59E" />
+                            <stop offset="100%" stop-color="#A67B5B" />
+                        </linearGradient>
+                    </defs>
+                    <g id="tables-left" transform="translate(600, 500)"></g>
+                    <g id="tables-right" transform="translate(1400, 500)"></g>
+                    <g id="chairs-layer"></g>
+                </svg>
+            </div>
+        </main>
+    </div>
+
+    <div id="name-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Gérer la chaise</h3>
+            <input type="text" id="chair-name-input" placeholder="Nom de l'invité">
+            <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; font-size: 0.9rem;">
+                <label><input type="radio" name="chair-gender" value="unassigned" checked> Neutre</label>
+                <label><input type="radio" name="chair-gender" value="F"> Femme (Rose)</label>
+                <label><input type="radio" name="chair-gender" value="M"> Homme (Vert)</label>
+            </div>
+            <div class="modal-actions" style="display: flex; gap: 1rem;">
+                <button id="btn-delete-name" class="btn secondary" style="background-color: var(--peony-dark); margin-right: auto;">Supprimer</button>
+                <button id="btn-cancel-name" class="btn">Annuler</button>
+                <button id="btn-save-name" class="btn primary">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
