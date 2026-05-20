@@ -32,6 +32,8 @@ let state = {
     nextChairId: 1,
     draggingChair: null,
     dragOffset: { x: 0, y: 0 },
+    dragged: false,
+    dragStart: { x: 0, y: 0 },
     isPanning: false,
     panStart: { x: 0, y: 0 },
     vbStart: { x: 0, y: 0, w: 2000, h: 1000 }
@@ -354,6 +356,8 @@ svgElem.addEventListener('mousedown', (e) => {
 
             if (chair) {
                 state.draggingChair = chair;
+                state.dragStart = { x: e.clientX, y: e.clientY };
+                state.dragged = false;
                 const pos = getMousePosition(e);
                 state.dragOffset = { x: chair.x - pos.x, y: chair.y - pos.y };
                 svgElem.style.cursor = 'grabbing';
@@ -387,6 +391,12 @@ svgElem.addEventListener('mousemove', (e) => {
     }
 
     if (!state.draggingChair) return;
+    
+    // Only flag as drag if moved more than 3 pixels
+    const moveDist = Math.hypot(e.clientX - state.dragStart.x, e.clientY - state.dragStart.y);
+    if (moveDist > 3) {
+        state.dragged = true;
+    }
     
     const pos = getMousePosition(e);
     let newX = pos.x + state.dragOffset.x;
@@ -431,9 +441,15 @@ svgElem.addEventListener('mouseup', (e) => {
     }
 
     if (state.draggingChair) {
+        const wasDragged = state.dragged;
+        const clickedId = state.draggingChair.id;
         state.draggingChair = null;
         svgElem.style.cursor = 'grab';
         updateCounters();
+        
+        if (!wasDragged && state.currentTool !== 'delete') {
+            openNameModal(clickedId);
+        }
     } else {
         // If we didn't drag, and not in delete mode, open name modal
         if (state.currentTool !== 'delete') {
